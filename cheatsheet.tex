@@ -9,6 +9,7 @@
 \usepackage{wasysym}
 \usepackage{mathtools}
 \usepackage{tikz}
+\usepackage{microtype}
 \usetikzlibrary{arrows}
 \usetikzlibrary{fit,positioning}
 
@@ -530,7 +531,7 @@ $
 $
 , which is the probability density function of student's t-distribution.
 
-\subsection{$\mathcal{KL}$ divergence of two gaussian}
+\subsection{$\mathcal{KL}$ divergence of two Gaussians}
 Given the distributions p and q of a continuous random variable, Kullback-Leibler divergence of q from p is:
 $
 \mathcal{K}\mathcal{L}(p||q) = - \int p(\mathbf{x}) \ln \lbrace \frac{q(x)}{p(x)} \rbrace \text{d}x,\	\text{matrix.cook.(324)} \\
@@ -668,8 +669,9 @@ $
 \sum_{x_1}p(x_1| \emptyset ) \ldots \sum_{x_K}p(x_K|\mathrm{pa}_K) \prod_{j=1}^{K-1}p(x_j|\mathrm{pa}_j) =\\
 $
 Provided that the individual conditional distributions are normalized and the term $x_K$ is not affecting the other terms in the above equation, Recursively we eliminate all variable, ending up in: $\sum_x\prod_{k=1}^kp(x_k|\mathrm{pa}_k) =1$
-\vspace{.2em}
+\vspace{.5em}
 \section{Mathematical Tricks}
+\vspace{-.5em}
 $-\frac{1}{2}(x-\mu)^\top\Sigma^{-1}(x-\mu) = -\frac{1}{2}x^\top \Sigma^{-1}x + x^\top \Sigma^{-1} \mu + c$\\
 $\frac{\partial a^\top X b}{\partial X} = ab^\top$,
 $\frac{\partial a^\top X^\top b}{\partial X} = ba^\top$\\
