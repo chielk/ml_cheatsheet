@@ -649,9 +649,9 @@ Transitions: $p(z_n|z_{n-1} = \mathcal{N}(z_n|Az_{n-1}, \Gamma)$ ($\Gamma \right
 Observations: $p(x_n|z_n) = \mathcal{N}(x_n|Cz_n, \Sigma)$ ($\Sigma \rightarrow$ measurement noise)\\
 Initial state: $p(z_1) = \mathcal{N}(z_1|\mu_0, V_0)$. Use EM to learn $A, \Gamma, C, \Sigma, \mu_0, V_0$ \\
 $\hat\alpha(z_n) = \mathcal{N}(z_n|\mu_n, V_n)$. \\
-$C_n\hat\alpha(z_n) = p(x_n|z_n)\int\hat\alpha(z_{n-1})p(z_n|z_{n-1})dz_{n-1}$. Using 2.115: $C_n = \mathcal{N}(x_n|A\mu_{n-1},\Sigma+CP_{n1}C^T)$. $\mu_n = (P_{n-1}^{-1} + C^T\Sigma^{-1}C)^{-1} (C^T\Sigma^{-1}x_n + P_{n-1}^{-1}A\mu_{n-1})$. $V_n = (P_{n-1}^{-1} + C^T\Sigma^{-1}C)^{-1}$. For stability:\\
+$C_n\hat\alpha(z_n) = p(x_n|z_n)\int\hat\alpha(z_{n-1})p(z_n|z_{n-1})dz_{n-1}$. Using 2.115: $c_n = \mathcal{N}(x_n|A\mu_{n-1},\Sigma+CP_{n1}C^T)$. $\mu_n = (P_{n-1}^{-1} + C^T\Sigma^{-1}C)^{-1} (C^T\Sigma^{-1}x_n + P_{n-1}^{-1}A\mu_{n-1})$. $V_n = (P_{n-1}^{-1} + C^T\Sigma^{-1}C)^{-1}$. For stability:\\
 $V_n = (I-K_nC)P_{n-1}$; $\mu_n = A\mu_{n-1} + K_n(x_n - CA\mu_{n-1})$ where $x_n-CA\mu_{n-1}$ is the error between observation and expected observation.\\
-$C_{n=1}\hat\beta(z_n) = \int \hat\beta(z_{n+1})p(x_{n+1}|z_{n+1}) p(z_{n+1}|z_n) dz_{n+1}$; $\hat\mu_n = \mu_n + J_n(\hat V_{n+1} - P_n)J_n^T$ where $J_n = V_nA^T(P_n)^{-1}$\\
+$c_{n=1}\hat\beta(z_n) = \int \hat\beta(z_{n+1})p(x_{n+1}|z_{n+1}) p(z_{n+1}|z_n) dz_{n+1}$; $\hat\mu_n = \mu_n + J_n(\hat V_{n+1} - P_n)J_n^T$ where $J_n = V_nA^T(P_n)^{-1}$\\
 Use $\gamma(z_n) = \hat\alpha(z_n)\hat\beta(z_n) = \mathcal{N}(z_n|\hat\mu_n, \hat V_n)$
 Learning: $\text{ln } p(X,Z|\theta) = \text{ln } p(z_1|\mu_0, V_0) + \sum^N_{n=2} \text{ln } p(z_n|z_{n-1}, A, \Gamma) + \sum^N_{n=1} \text{ln } p(x_n|z_n, C, \Sigma)$ \\
 $Q(\theta, \theta^{old}) = \mathbb{E}_{z|\theta^{old}}[\text{ln } p(X,Z|\theta)]$.\\
