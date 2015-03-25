@@ -462,8 +462,10 @@ If all exogenous variables in an SCM are jointly independent then we say that th
 An SCM M is called \textbf{Markovian} if:\\
 $\rightarrow$ it is acyclic\\
 $\rightarrow$ it is causally sufficient.\\
-\textbf{Causal Markov Condition:}\\
-$p(x_1, \ldots, x_n) = \prod_{i=1}^N p(x_i|x_{pa(i)})$\\
+\textbf{Causal Markov Condition/Truncated Factorization:}\\
+$p(x_1, \ldots, x_N) = \prod_{i=1}^N p(x_i|x_{pa(i)})$\\
+\textbf{After an intervention:}\\
+$p(x_1, \ldots, x_N|do(x_l=\psi_l)) = \prod_{i=1\\;i\not\in l}^N p(x_i|X_{pa(i)}) \prod_{i\in l} \mathbf{I}[x_i = \psi_i]$
 \textit{Each Markovian SCM induces a Bayesian network. Conversely, for any given Bayesian network, one can construct a
 Markovian SCM that induces the same probability distribution.
 We prefer SCMs over Bayesian Networks because they generalize to
