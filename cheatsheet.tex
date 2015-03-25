@@ -338,7 +338,7 @@ $t \rightarrow 1$, $x_t \sim q_{\infty}(x_{\infty})$ Equilibrium or invariant di
 $q(x_{t+1}, x_t) = T(x_{t+1}|x_t)q(x_t)$\\
 \textbf{Invariance}:
 We want to find T for a given p, such that $p = T p$ holds.\\
-\textbf{Detailed balance}:(or reversibility) We want to find T so that transition from one state to another has probability mass equal to the transition from that next state to the current.\\ Proof:$A_k(z',z) = \text{min }\big( 1, \frac{p(z')q(z|z')}{p(z)q(z'|z)} \big)$\\
+\textbf{Detailed balance}:(or reversibility) We want to find T so that transition from one state to another has probability mass equal to the transition from that next state to the current. Thus, $p^*(z)T(z,z') = p^*(z')T(z',z)$. Distribution $p^*(z)$ is invariant if $p^*(z)=\sum_{z'}p^*(z')T(z',z)$\\ Proof:$A_k(z',z) = \text{min }\big( 1, \frac{p(z')q(z|z')}{p(z)q(z'|z)} \big)$\\
 $p(z)q(z'|z)A_k(z',z) = \text{min } \big( p(z)q(z'|z),p(z')q(z|z') \big)$ [multiply by denom]\\
 $= \text{min }\big(p(z')q(z|z'), p(z)q(z'|z) \big)$ [order irrelevant]\\
 $= p(z')q(z|z')A_k(z,z')$
@@ -427,7 +427,7 @@ E-step: maximize $\mathcal{L}(q, \theta)$ wrt $q(Z)$. M-step: maximize $\mathcal
 \subsubsection{Forward-Backward}
 $$a(z_n) = p(x_n|z_n) \sum_{z_{n-1}} a(z_{n-1})p(z_n|z_{n-1})$$
 $$\beta(z_n) = \sum_{z_{n+1}} \beta(z_{n+1}) p(x_{n=1}|z_{n+1})p(z_{n+1}|z_n)$$
-\textbf{Predictive distribution}: Add $x_{n+1}$ and $z_{n+1}$ at the end of the chain and use the calculated parameters to predict the new values.(assuming the chain is homogeneous)
+\textbf{Predictive distribution}: Add $x_{n+1}$ and $z_{n+1}$ at the end of the chain and use the calculated parameters to predict the new values.(assuming the chain is homogeneous). By d-separation (if applicable), $p(x_{N+1}|X) = p(x_{N+1}|x_{N})$ (regular Markov Chain, add $z$'s to taste. 
 \section{Causality}
 \begin{scriptsize}
 \textbf{Statistics}, (most of) Machine Learning
@@ -665,6 +665,26 @@ Learning: $\text{ln } p(X,Z|\theta) = \text{ln } p(z_1|\mu_0, V_0) + \sum^N_{n=2
 $Q(\theta, \theta^{old}) = \mathbb{E}_{z|\theta^{old}}[\text{ln } p(X,Z|\theta)]$.\\
 $\mathbb{E}[z_n] = \hat\mu_n$; $\mathbb{E}[z_nz_{n-1}^T] = \hat V_nJ_{n-1}^T+\hat\mu_n\hat\mu_{n-1}^T$; $\mathbb{E}[z_nz_n^T]= \hat V_n + \hat\mu_n\hat\mu_n^T$\\
 Kalman gain matrix: $K_n$ as found in $c_n = \mathcal{N}(x_n|\mu_{x_n}, K_n)$
+
+\subsection{Forward-backward for HMM}
+$p(x_N|X,z_{N+1}) = p(X_{N+1}, z_{N+1})$\\
+$p(z_{N+1}|z_N,X) = p(z_{N+1}, z_N)$ \\
+$p(X|z_n) = p(x_1, \ldots, x_n|z_n)p(x_{n+1},\ldots,x_N|z_n)$ \\
+$\gamma(z_n) = p(z_n|X) = \frac{p(X|z_n)p(z_n)}{p(X)}$ [$p(X)$ implicitly conditioned on $\theta^{old}$, is likelihood]\\
+We can write $\gamma(z_n)=\frac{p(x_1,\ldots,x_n,z_n)p(x_{n+1},\ldots,x_N|z_n)}{p(X)} = \frac{\alpha(z_n)\beta(z_n)}{p(X)}$\\
+\textbf{Recursion relations:}\\
+$\alpha(z_n) = p(x_n|z_n)\sum_{z_{n-1}} \alpha(z_{n-1})p(z_n|z_{n-1})$\\
+$\alpha(z_1) = p(x_1,z_1) = p(z_1)p(x_1|z_1) = \prod^K_{k=1} \{\pi_kp(x_1|\phi_k)\}^{z_{1k}}$\\
+$\beta(z_n) = \sum_{z_{n+1}} \beta(z_{n+1})p(x_{n+1}|z_{n+1})p(z_{n+1}|z_n)$\\
+$\beta(z_N) = 1 $\\
+$\xi(z_{n-1},z_n) = p(z_{n-1},z_n|X) = \frac{\alpha(z_{n-1})p(x_n|z_n)p(z_n|z_{n-1})\beta(z_n)}{p(X)}$
+\textbf{Joint}\\
+$p(X) = \sum_{z_n}\alpha(z_n)\beta(z_n)$\\
+\textbf{EM}:\\
+E-step: Evaluate $\gamma(z_n)$ and $\xi(z_{n-1},z_n)$. M-step: maximize $Q(\theta,\theta^{old}) = \sum_Z p(Z|X,\theta^{old}) \text{ln } p(X,Z|\theta)$
+$= \sum^K_{k=1} \gamma(z_{1k}) \text{ln }\pi_k + \sum^N_{n=2}\sum^K_{j=1}\sum^K_{k=1} \xi(z_{n-1,j}z_{nk})\text{ln }A_{jk} + \sum^N_{n=1}\sum^K_{k=1}\gamma(z_{nk})\text{ln } p(x_n|\phi_k)$
+
+
 
 \subsection{Joint Prob. in BN}
 The joint probability over all the nodes in a BN is:
