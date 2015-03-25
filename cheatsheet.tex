@@ -350,7 +350,18 @@ In the $\tau$ step of the algorithm the current state is $z^{(\tau)}$, we draw s
 Fun fact: If we sample in a smart way (e.g. not sample the same point twice, ensure that areas there hasn't been sampled from have higher probability of being chosen) instead of random, these methods may converge faster.
 
 \subsection{Gibbs sampling}
-For a distribution $p(\mathbf{z})$, for each component of the distribution $z_i$ draw a sample from the distribution of that variable given the values of the remaining variables.
+For a distribution $p(\mathbf{z})$, for each component of the distribution $z_i$ draw a sample from the distribution of that variable given the values of the remaining variables:
+\begin{enumerate}
+\item Initialize $\{ z_i: i = 1, \dots ,M$
+\item For $\tau = 1,\dots ,T$:
+\begin{itemize}
+  \item Sample $z_1^{\tau+1} \sim p(z_1|z_2^{\tau},\dots , z_M^{\tau})$\\
+  $\vdots$
+  \item Sample $z_j^{\tau+1} \sim p(z_j|z_1^{\tau+1},\dots ,z_{j-1}^{\tau+1},z_{j+1}^{\tau},\dots , z_M^{\tau})$\\
+  $\vdots$
+  \item Sample $z_M^{\tau+1} \sim p(z_M|z_1^{\tau+1}, \dots ,z_{M-1}^{\tau+1}$
+\end{itemize}
+\end{enumerate}
 
 \subsection{Algorithm HMC}
 \begin{enumerate}
