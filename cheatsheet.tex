@@ -658,7 +658,8 @@ $c_{n=1}\hat\beta(z_n) = \int \hat\beta(z_{n+1})p(x_{n+1}|z_{n+1}) p(z_{n+1}|z_n
 Use $\gamma(z_n) = \hat\alpha(z_n)\hat\beta(z_n) = \mathcal{N}(z_n|\hat\mu_n, \hat V_n)$
 Learning: $\text{ln } p(X,Z|\theta) = \text{ln } p(z_1|\mu_0, V_0) + \sum^N_{n=2} \text{ln } p(z_n|z_{n-1}, A, \Gamma) + \sum^N_{n=1} \text{ln } p(x_n|z_n, C, \Sigma)$ \\
 $Q(\theta, \theta^{old}) = \mathbb{E}_{z|\theta^{old}}[\text{ln } p(X,Z|\theta)]$.\\
-$\mathbb{E}[z_n] = \hat\mu_n$; $\mathbb{E}[z_nz_{n-1}^T] = \hat V_nJ_{n-1}^T+\hat\mu_n\hat\mu_{n-1}^T$; $\mathbb{E}[z_nz_n^T]= \hat V_n + \hat\mu_n\hat\mu_n^T$
+$\mathbb{E}[z_n] = \hat\mu_n$; $\mathbb{E}[z_nz_{n-1}^T] = \hat V_nJ_{n-1}^T+\hat\mu_n\hat\mu_{n-1}^T$; $\mathbb{E}[z_nz_n^T]= \hat V_n + \hat\mu_n\hat\mu_n^T$\\
+Kalman gain matrix: $K_n$ as found in $c_n = \mathcal{N}(x_n|\mu_{x_n}, K_n)$
 
 \subsection{Joint Prob. in BN}
 The joint probability over all the nodes in a BN is:
