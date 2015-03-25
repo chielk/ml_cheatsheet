@@ -364,9 +364,11 @@ For a distribution $p(\mathbf{z})$, for each component of the distribution $z_i$
 \end{itemize}
 \end{enumerate}
 
-\subsection{Algorithm HMC}
+\subsection{Algorithm Hamiltinian MC (HMC)}
+Energy $H$ is conserved.
 \begin{enumerate}
 \itemsep0em
+\item $x \sim p(x) = \frac{1}{z} e^{-H(x)}$
 \item $\mathbf{x_0}$
 \item draw $r_0 \sim \mathcal{N}(0,1)$
 \item ``Leapfrog stepping''
