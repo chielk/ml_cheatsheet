@@ -338,7 +338,10 @@ $t \rightarrow 1$, $x_t \sim q_{\infty}(x_{\infty})$ Equilibrium or invariant di
 $q(x_{t+1}, x_t) = T(x_{t+1}|x_t)q(x_t)$\\
 \textbf{Invariance}:
 We want to find T for a given p, such that $p = T p$ holds.\\
-\textbf{Detailed balance}:(or reversibility) We want to find T so that transition from one state to another has probability mass equal to the transition from that next state to the current.\\
+\textbf{Detailed balance}:(or reversibility) We want to find T so that transition from one state to another has probability mass equal to the transition from that next state to the current.\\ Proof:$A_k(z',z) = \text{min }\big( 1, \frac{p(z')q(z|z')}{p(z)q(z'|z)} \big)$\\
+$p(z)q(z'|z)A_k(z',z) = \text{min } \big( p(z)q(z'|z),p(z')q(z|z') \big)$ [multiply by denom]\\
+$= \text{min }\big(p(z')q(z|z'), p(z)q(z'|z) \big)$ [order irrelevant]\\
+$= p(z')q(z|z')A_k(z,z')$
 \textbf{Ergodicity}:
 This algorithm needs ergodicity: A positive probability for every state (so all will be reached).\\
 \textit{For two transition kernels $T_1, T_2$ that are valid any linear combination of these two is a valid kernel.}
