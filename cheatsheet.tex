@@ -744,6 +744,14 @@ Next, we propagate from the root back to the leaf:\\
 $\mu_{f_{n+1}\rightarrow f_n}(z_n) = \sum_{z_{n+1}} f_{n+1}(z_n,z_{n+1}) \mu_{f_{n+1}\rightarrow f_{n+1}}(z_{n+1})$\\
 And we can set:\\
 $\beta(z_n) = \mu_{f_{n+1}\rightarrow z_n}(z_n)$
+\subsection{Viterbi for HMM}
+Again, set $z_N$ as root and pass from leaf to root:\\
+$\mu_{z_n \rightarrow f_{n+1}}(z_n) = \mu_{f_n \rightarrow z_n}(z_n)$\\
+$\mu_{f_{n+1} \rightarrow z_{n+1}}(z_{n+1}) = \underset{z_n}{\text{max}} \{ \text{ln }f_{n+1}(z_n,z_{n+1}) + \mu_{z_n \rightarrow f_{n+1}}(z_n) \}$ \\
+Eliminate $\mu_{z_n \rightarrow f_{n+1}}(z_n)$ and use $f_n(z_{n-1},z_n) = p(z_n|z_{n-1})p(x_n|z_n)$ to get a recursion:\\
+$\omega(z_{n+1}) = \text{ln } p(x_{n+1}|z_{n+1}) + \underset{z_n}{\text{max }} \{ \text{ln }p(z_{n+1}|z_n) + \omega(z_n)\}$\\
+These are initialized using:\\
+$\omega(z_1) = \text{ln }p(z_1) + \text{ln }p(x_1|z_1)$
 
 \subsection{Factorized distributions in approx inf}
 $\mathcal{L}(q) = \int \prod_i q_i \big\{ \text{ln } p(X,Z) - \sum_i \text{ln } q_i \}dZ$\\
