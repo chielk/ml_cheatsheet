@@ -314,6 +314,22 @@ $KL(q||p) = - \int q(Z) \text{ln } \big \{ \frac{p(Z|X)}{q(Z)} \big\} dZ$\\
 \textbf{Note that}\\
 $Q(\theta,\theta^{old}) = \sum_z p(Z|X,\theta^{old}) \text{ln } p(X,Z|\theta) = \mathbb{E}_{Z|X,\theta^{old}}[\text{ln } p(X,Z|\theta)]$
 
+\subsection{Expectation Propagation}
+Joint distribution $p(D,\theta) = \prod_i f_i(\theta)$\\
+Approximate $p(\theta|D)$ using $q(\theta) = \frac{1}{Z} \prod_i \tilde f_i(\theta)$, and also approximate $p(D)$ somehow.\\
+\begin{enumerate}
+\item Initialize approximating factors $\tilde f_i(\theta)$
+\item Initialize the posterior approximation by setting $q(\theta)\varpropto \prod_i \tilde f_i(\theta)$
+\item Until convergence:
+\begin{enumerate}
+\item Choose a factor $\tilde f_j(\theta)$ to refine
+\item Remove $\tilde f_j(\theta)$ from the posterior by division: $q^{\setminus j}(\theta) = \frac{q(\theta)}{\tilde f_j(\theta}$
+\item Evaluate new posterior by setting the moments of $q^{new}(\theta)$ equal to those of $q^{\setminus j}(\theta) f_j(\theta) d\theta$, including $Z_j = \int q^{\setminus j} (\theta) f_j(\theta) d\theta$
+\item Evaluate + store new factor $\tilde f_j(\theta) = Z_j \frac{q^{new}(\theta)}{q^{\setminus j})\theta}$
+\end{enumerate}
+\item Evaluate the approximation to the model evidence $p(D) \simeq \int \prod_i \tilde f_i(\theta) d\theta$
+\end{enumerate}
+
 
 \section{sampling: standard, MCMC, Gibbs, HybridMC}
 \subsection{Rejection sampling}
