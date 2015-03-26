@@ -643,6 +643,15 @@ $
 p(D|\alpha,\beta) = \prod_{d=1}^M \int p(\theta_d|\alpha) \prod_{n=1}^{N_d} \sum_{z_{d_n}} p(z_{d_n}|\theta_d)p(w_{d_n}|z_{d_n},\beta) \mathrm{d}\theta_d
 $
 
+\subsubsection{Gibbs sampling formula}
+$p(z_{di}=k|w,z^{(-di)}) = \frac{p(z_{di}=k, w, z^{(-di)})}{p(w,z^{(-di)}}$\\
+$= \frac{p(z_{di}=k, z^{(-di)})}{p(z^{(-di)})} \times \frac{p(w|z)}{p(q^{(-di)}|z^{(-di)})p(w_{di})}$\\
+$\varpropto \frac{\Gamma(A_{dk}+\alpha)}{\Gamma(\sum^K_{j=1} A_{dj}+\alpha)} \times \frac{\Gamma(\sum^K_{j=1}A_{dj}^{(-di)} + \alpha}{\Gamma(A_{dk}^{(-di)} + \alpha)}$\\
+$\times \frac{\Gamma(B_{kw}+\beta)}{\Gamma(\sum_w B_{kw} + \beta)} \times \frac{\Gamma(\sum_w B_{kw}^{(-di)} + \beta)}{\Gamma(B_{kw}^{(-di)} +\beta)}$\\
+Using $\Gamma(x+1) = x\Gamma(x)$, we write:\\
+$p(z_{di}=k|w,z^{-i}) = \frac{A_{dk}^{-i}+\alpha}{\sum^K_{j=1} A_{dk}^{-i} + \alpha} \times \frac{B_{kw}^{-i}+\beta}{\sum_{w\in V} B_{kw}^{-i} + \beta}$\\
+$ = \frac{A_{dk}^{-i}+\alpha}{\sum^K_{j=1}A_{dk}^{-i}+\alpha} \times \frac{B^{-i}_{kw} + \beta}{\sum_{w\in V} B_{kw}^{-i} + \beta}$
+
 \subsection{Independent Component Analysis}
 We have a set of N observations:\\
 $D = \lbrace \mathbf{x}^{(n)} \in \mathbb{R}^J \rbrace ^{N}_{n=1}$\\
