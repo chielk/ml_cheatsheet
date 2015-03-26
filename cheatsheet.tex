@@ -705,6 +705,19 @@ $p(X) = \sum_{z_n}\alpha(z_n)\beta(z_n)$\\
 \textbf{EM}:\\
 E-step: Evaluate $\gamma(z_n)$ and $\xi(z_{n-1},z_n)$. M-step: maximize $Q(\theta,\theta^{old}) = \sum_Z p(Z|X,\theta^{old}) \text{ln } p(X,Z|\theta)$
 $= \sum^K_{k=1} \gamma(z_{1k}) \text{ln }\pi_k + \sum^N_{n=2}\sum^K_{j=1}\sum^K_{k=1} \xi(z_{n-1,j}z_{nk})\text{ln }A_{jk} + \sum^N_{n=1}\sum^K_{k=1}\gamma(z_{nk})\text{ln } p(x_n|\phi_k)$
+\subsection{Sum-product for HMM}
+We define:\\
+$h(z_1) = p(z_1)p(x_1|z_1)$\\
+$f_n(z_{n-1},z_n) = p(z_n|z_{n-1})p(x_n|z_n)$\\
+Define final hidden variable $z_n$ as root, and first pass from h to root:\\
+$\mu_{z_{n-1}\rightarrow f_n}(z_{n-1}) = \mu_{f_{n-1}\rightarrow z_{n-1}}(z_{n-1})$\\
+$\mu_{f_n\rightarrow z_n}(z_n) = \sum_{z_{n-1}}f_n(z_{n-1},z_n) \mu_{z_{n-1} \rightarrow f_n}(z_{n-1})$\\
+We can set:\\
+$\alpha(z_n) = \mu_{f_n\rightarrow z_n}(z_n)$\\
+Next, we propagate from the root back to the leaf:\\
+$\mu_{f_{n+1}\rightarrow f_n}(z_n) = \sum_{z_{n+1}} f_{n+1}(z_n,z_{n+1}) \mu_{f_{n+1}\rightarrow f_{n+1}}(z_{n+1})$\\
+And we can set:\\
+$\beta(z_n) = \mu_{f_{n+1}\rightarrow z_n}(z_n)$
 
 \subsection{Factorized distributions in approx inf}
 $\mathcal{L}(q) = \int \prod_i q_i \big\{ \text{ln } p(X,Z) - \sum_i \text{ln } q_i \}dZ$\\
