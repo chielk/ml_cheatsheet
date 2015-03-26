@@ -306,7 +306,13 @@ fact that the two terms of $\mathcal{KL}$ divergence are coming from different i
 $
 h(\theta_{t}) \leq h(\theta_{t+1})
 $
-, cause $\mathcal{KL} \geq 0$.
+, cause $\mathcal{KL} \geq 0$.\\
+\textbf{Lower bound $\mathcal{L}(q)$ and KL-divergence}
+$\text{ln } p(X) = \mathcal{L}(q) + KL(q||p)$\\
+$\mathcal{L} (q) = \int q(Z) \text{ln } \big\{ \frac{p(X,Z)}{q(Z)} \big\} dZ$ \\
+$KL(q||p) = - \int q(Z) \text{ln } \big \{ \frac{p(Z|X)}{q(Z)} \big\} dZ$\\
+\textbf{Note that}\\
+$Q(\theta,\theta^{old}) = \sum_z p(Z|X,\theta^{old}) \text{ln } p(X,Z|\theta) = \mathbb{E}_{Z|X,\theta^{old}}[\text{ln } p(X,Z|\theta)]$
 
 
 \section{sampling: standard, MCMC, Gibbs, HybridMC}
