@@ -530,6 +530,58 @@ $X \leftrightarrow \ldots Y$ (paths between X and Y with an arrow pointing to X)
 \end{enumerate}
 In that case:
 $p(Y|do(X)) = \int p(Y|X,X_s)p(X_s) \mathrm{d}X_s$
+\subsection{Linear Dynamical Systems}
+Transitions: $p(z_n|z_{n-1} = \mathcal{N}(z_n|Az_{n-1}, \Gamma)$ ($\Gamma \rightarrow$ transisition noise)\\
+Observations: $p(x_n|z_n) = \mathcal{N}(x_n|Cz_n, \Sigma)$ ($\Sigma \rightarrow$ measurement noise)\\
+Initial state: $p(z_1) = \mathcal{N}(z_1|\mu_0, V_0)$. Use EM to learn $A, \Gamma, C, \Sigma, \mu_0, V_0$ \\
+$\hat\alpha(z_n) = \mathcal{N}(z_n|\mu_n, V_n)$. \\
+$C_n\hat\alpha(z_n) = p(x_n|z_n)\int\hat\alpha(z_{n-1})p(z_n|z_{n-1})dz_{n-1}$. Using 2.115: $c_n = \mathcal{N}(x_n|A\mu_{n-1},\Sigma+CP_{n1}C^T)$. $\mu_n = (P_{n-1}^{-1} + C^T\Sigma^{-1}C)^{-1} (C^T\Sigma^{-1}x_n + P_{n-1}^{-1}A\mu_{n-1})$. $V_n = (P_{n-1}^{-1} + C^T\Sigma^{-1}C)^{-1}$. For stability:\\
+$V_n = (I-K_nC)P_{n-1}$; $\mu_n = A\mu_{n-1} + K_n(x_n - CA\mu_{n-1})$ where $x_n-CA\mu_{n-1}$ is the error between observation and expected observation.\\
+$c_{n=1}\hat\beta(z_n) = \int \hat\beta(z_{n+1})p(x_{n+1}|z_{n+1}) p(z_{n+1}|z_n) dz_{n+1}$; $\hat\mu_n = \mu_n + J_n(\hat V_{n+1} - P_n)J_n^T$ where $J_n = V_nA^T(P_n)^{-1}$\\
+Use $\gamma(z_n) = \hat\alpha(z_n)\hat\beta(z_n) = \mathcal{N}(z_n|\hat\mu_n, \hat V_n)$
+Learning: $\text{ln } p(X,Z|\theta) = \text{ln } p(z_1|\mu_0, V_0) + \sum^N_{n=2} \text{ln } p(z_n|z_{n-1}, A, \Gamma) + \sum^N_{n=1} \text{ln } p(x_n|z_n, C, \Sigma)$ \\
+$Q(\theta, \theta^{old}) = \mathbb{E}_{z|\theta^{old}}[\text{ln } p(X,Z|\theta)]$.\\
+$\mathbb{E}[z_n] = \hat\mu_n$; $\mathbb{E}[z_nz_{n-1}^T] = \hat V_nJ_{n-1}^T+\hat\mu_n\hat\mu_{n-1}^T$; $\mathbb{E}[z_nz_n^T]= \hat V_n + \hat\mu_n\hat\mu_n^T$\\
+Kalman gain matrix: $K_n$ as found in $c_n = \mathcal{N}(x_n|\mu_{x_n}, K_n)$
+
+\subsection{Forward-backward for HMM}
+$p(x_N|X,z_{N+1}) = p(X_{N+1}, z_{N+1})$\\
+$p(z_{N+1}|z_N,X) = p(z_{N+1}, z_N)$ \\
+$p(X|z_n) = p(x_1, \ldots, x_n|z_n)p(x_{n+1},\ldots,x_N|z_n)$ \\
+$\gamma(z_n) = p(z_n|X) = \frac{p(X|z_n)p(z_n)}{p(X)}$ [$p(X)$ implicitly conditioned on $\theta^{old}$, is likelihood]\\
+We can write $\gamma(z_n)=\frac{p(x_1,\ldots,x_n,z_n)p(x_{n+1},\ldots,x_N|z_n)}{p(X)} = \frac{\alpha(z_n)\beta(z_n)}{p(X)}$\\
+\textbf{Recursion relations:}\\
+$\alpha(z_n) = p(x_n|z_n)\sum_{z_{n-1}} \alpha(z_{n-1})p(z_n|z_{n-1})$\\
+$\alpha(z_1) = p(x_1,z_1) = p(z_1)p(x_1|z_1) = \prod^K_{k=1} \{\pi_kp(x_1|\phi_k)\}^{z_{1k}}$\\
+$\beta(z_n) = \sum_{z_{n+1}} \beta(z_{n+1})p(x_{n+1}|z_{n+1})p(z_{n+1}|z_n)$\\
+$\beta(z_N) = 1 $\\
+$\xi(z_{n-1},z_n) = p(z_{n-1},z_n|X) = \frac{\alpha(z_{n-1})p(x_n|z_n)p(z_n|z_{n-1})\beta(z_n)}{p(X)}$
+\textbf{Joint}\\
+$p(X) = \sum_{z_n}\alpha(z_n)\beta(z_n)$\\
+\textbf{EM}:\\
+E-step: Evaluate $\gamma(z_n)$ and $\xi(z_{n-1},z_n)$. M-step: maximize $Q(\theta,\theta^{old}) = \sum_Z p(Z|X,\theta^{old}) \text{ln } p(X,Z|\theta)$
+$= \sum^K_{k=1} \gamma(z_{1k}) \text{ln }\pi_k + \sum^N_{n=2}\sum^K_{j=1}\sum^K_{k=1} \xi(z_{n-1,j}z_{nk})\text{ln }A_{jk} + \sum^N_{n=1}\sum^K_{k=1}\gamma(z_{nk})\text{ln } p(x_n|\phi_k)$
+\subsection{Sum-product for HMM}
+We define:\\
+$h(z_1) = p(z_1)p(x_1|z_1)$\\
+$f_n(z_{n-1},z_n) = p(z_n|z_{n-1})p(x_n|z_n)$\\
+Define final hidden variable $z_n$ as root, and first pass from h to root:\\
+$\mu_{z_{n-1}\rightarrow f_n}(z_{n-1}) = \mu_{f_{n-1}\rightarrow z_{n-1}}(z_{n-1})$\\
+$\mu_{f_n\rightarrow z_n}(z_n) = \sum_{z_{n-1}}f_n(z_{n-1},z_n) \mu_{z_{n-1} \rightarrow f_n}(z_{n-1})$\\
+We can set:\\
+$\alpha(z_n) = \mu_{f_n\rightarrow z_n}(z_n)$\\
+Next, we propagate from the root back to the leaf:\\
+$\mu_{f_{n+1}\rightarrow f_n}(z_n) = \sum_{z_{n+1}} f_{n+1}(z_n,z_{n+1}) \mu_{f_{n+1}\rightarrow f_{n+1}}(z_{n+1})$\\
+And we can set:\\
+$\beta(z_n) = \mu_{f_{n+1}\rightarrow z_n}(z_n)$
+\subsection{Viterbi for HMM}
+Again, set $z_N$ as root and pass from leaf to root:\\
+$\mu_{z_n \rightarrow f_{n+1}}(z_n) = \mu_{f_n \rightarrow z_n}(z_n)$\\
+$\mu_{f_{n+1} \rightarrow z_{n+1}}(z_{n+1}) = \underset{z_n}{\text{max}} \{ \text{ln }f_{n+1}(z_n,z_{n+1}) + \mu_{z_n \rightarrow f_{n+1}}(z_n) \}$ \\
+Eliminate $\mu_{z_n \rightarrow f_{n+1}}(z_n)$ and use $f_n(z_{n-1},z_n) = p(z_n|z_{n-1})p(x_n|z_n)$ to get a recursion:\\
+$\omega(z_{n+1}) = \text{ln } p(x_{n+1}|z_{n+1}) + \underset{z_n}{\text{max }} \{ \text{ln }p(z_{n+1}|z_n) + \omega(z_n)\}$\\
+These are initialized using:\\
+$\omega(z_1) = \text{ln }p(z_1) + \text{ln }p(x_1|z_1)$
 
 \section{Homework}
 \subsection{Derive the mean, covariance, and mode of multivariate Student's t-distribution.}
@@ -699,59 +751,6 @@ $p(x_1, x_2) = f_a(x_1,x_2) \mu_{x_2 \rightarrow f_a}(x_2) \mu_{x_1 \rightarrow 
 = \sum_{x_3}\sum_{x_4}f_a(x_1,x_2) f_b(x_2,x_3) f_c(x_2,x_4)\\
 = \sum_{x_3}\sum_{x_4}p(x_1,x_2,x_3,x_4)
 $
-
-\subsection{Linear Dynamical Systems}
-Transitions: $p(z_n|z_{n-1} = \mathcal{N}(z_n|Az_{n-1}, \Gamma)$ ($\Gamma \rightarrow$ transisition noise)\\
-Observations: $p(x_n|z_n) = \mathcal{N}(x_n|Cz_n, \Sigma)$ ($\Sigma \rightarrow$ measurement noise)\\
-Initial state: $p(z_1) = \mathcal{N}(z_1|\mu_0, V_0)$. Use EM to learn $A, \Gamma, C, \Sigma, \mu_0, V_0$ \\
-$\hat\alpha(z_n) = \mathcal{N}(z_n|\mu_n, V_n)$. \\
-$C_n\hat\alpha(z_n) = p(x_n|z_n)\int\hat\alpha(z_{n-1})p(z_n|z_{n-1})dz_{n-1}$. Using 2.115: $c_n = \mathcal{N}(x_n|A\mu_{n-1},\Sigma+CP_{n1}C^T)$. $\mu_n = (P_{n-1}^{-1} + C^T\Sigma^{-1}C)^{-1} (C^T\Sigma^{-1}x_n + P_{n-1}^{-1}A\mu_{n-1})$. $V_n = (P_{n-1}^{-1} + C^T\Sigma^{-1}C)^{-1}$. For stability:\\
-$V_n = (I-K_nC)P_{n-1}$; $\mu_n = A\mu_{n-1} + K_n(x_n - CA\mu_{n-1})$ where $x_n-CA\mu_{n-1}$ is the error between observation and expected observation.\\
-$c_{n=1}\hat\beta(z_n) = \int \hat\beta(z_{n+1})p(x_{n+1}|z_{n+1}) p(z_{n+1}|z_n) dz_{n+1}$; $\hat\mu_n = \mu_n + J_n(\hat V_{n+1} - P_n)J_n^T$ where $J_n = V_nA^T(P_n)^{-1}$\\
-Use $\gamma(z_n) = \hat\alpha(z_n)\hat\beta(z_n) = \mathcal{N}(z_n|\hat\mu_n, \hat V_n)$
-Learning: $\text{ln } p(X,Z|\theta) = \text{ln } p(z_1|\mu_0, V_0) + \sum^N_{n=2} \text{ln } p(z_n|z_{n-1}, A, \Gamma) + \sum^N_{n=1} \text{ln } p(x_n|z_n, C, \Sigma)$ \\
-$Q(\theta, \theta^{old}) = \mathbb{E}_{z|\theta^{old}}[\text{ln } p(X,Z|\theta)]$.\\
-$\mathbb{E}[z_n] = \hat\mu_n$; $\mathbb{E}[z_nz_{n-1}^T] = \hat V_nJ_{n-1}^T+\hat\mu_n\hat\mu_{n-1}^T$; $\mathbb{E}[z_nz_n^T]= \hat V_n + \hat\mu_n\hat\mu_n^T$\\
-Kalman gain matrix: $K_n$ as found in $c_n = \mathcal{N}(x_n|\mu_{x_n}, K_n)$
-
-\subsection{Forward-backward for HMM}
-$p(x_N|X,z_{N+1}) = p(X_{N+1}, z_{N+1})$\\
-$p(z_{N+1}|z_N,X) = p(z_{N+1}, z_N)$ \\
-$p(X|z_n) = p(x_1, \ldots, x_n|z_n)p(x_{n+1},\ldots,x_N|z_n)$ \\
-$\gamma(z_n) = p(z_n|X) = \frac{p(X|z_n)p(z_n)}{p(X)}$ [$p(X)$ implicitly conditioned on $\theta^{old}$, is likelihood]\\
-We can write $\gamma(z_n)=\frac{p(x_1,\ldots,x_n,z_n)p(x_{n+1},\ldots,x_N|z_n)}{p(X)} = \frac{\alpha(z_n)\beta(z_n)}{p(X)}$\\
-\textbf{Recursion relations:}\\
-$\alpha(z_n) = p(x_n|z_n)\sum_{z_{n-1}} \alpha(z_{n-1})p(z_n|z_{n-1})$\\
-$\alpha(z_1) = p(x_1,z_1) = p(z_1)p(x_1|z_1) = \prod^K_{k=1} \{\pi_kp(x_1|\phi_k)\}^{z_{1k}}$\\
-$\beta(z_n) = \sum_{z_{n+1}} \beta(z_{n+1})p(x_{n+1}|z_{n+1})p(z_{n+1}|z_n)$\\
-$\beta(z_N) = 1 $\\
-$\xi(z_{n-1},z_n) = p(z_{n-1},z_n|X) = \frac{\alpha(z_{n-1})p(x_n|z_n)p(z_n|z_{n-1})\beta(z_n)}{p(X)}$
-\textbf{Joint}\\
-$p(X) = \sum_{z_n}\alpha(z_n)\beta(z_n)$\\
-\textbf{EM}:\\
-E-step: Evaluate $\gamma(z_n)$ and $\xi(z_{n-1},z_n)$. M-step: maximize $Q(\theta,\theta^{old}) = \sum_Z p(Z|X,\theta^{old}) \text{ln } p(X,Z|\theta)$
-$= \sum^K_{k=1} \gamma(z_{1k}) \text{ln }\pi_k + \sum^N_{n=2}\sum^K_{j=1}\sum^K_{k=1} \xi(z_{n-1,j}z_{nk})\text{ln }A_{jk} + \sum^N_{n=1}\sum^K_{k=1}\gamma(z_{nk})\text{ln } p(x_n|\phi_k)$
-\subsection{Sum-product for HMM}
-We define:\\
-$h(z_1) = p(z_1)p(x_1|z_1)$\\
-$f_n(z_{n-1},z_n) = p(z_n|z_{n-1})p(x_n|z_n)$\\
-Define final hidden variable $z_n$ as root, and first pass from h to root:\\
-$\mu_{z_{n-1}\rightarrow f_n}(z_{n-1}) = \mu_{f_{n-1}\rightarrow z_{n-1}}(z_{n-1})$\\
-$\mu_{f_n\rightarrow z_n}(z_n) = \sum_{z_{n-1}}f_n(z_{n-1},z_n) \mu_{z_{n-1} \rightarrow f_n}(z_{n-1})$\\
-We can set:\\
-$\alpha(z_n) = \mu_{f_n\rightarrow z_n}(z_n)$\\
-Next, we propagate from the root back to the leaf:\\
-$\mu_{f_{n+1}\rightarrow f_n}(z_n) = \sum_{z_{n+1}} f_{n+1}(z_n,z_{n+1}) \mu_{f_{n+1}\rightarrow f_{n+1}}(z_{n+1})$\\
-And we can set:\\
-$\beta(z_n) = \mu_{f_{n+1}\rightarrow z_n}(z_n)$
-\subsection{Viterbi for HMM}
-Again, set $z_N$ as root and pass from leaf to root:\\
-$\mu_{z_n \rightarrow f_{n+1}}(z_n) = \mu_{f_n \rightarrow z_n}(z_n)$\\
-$\mu_{f_{n+1} \rightarrow z_{n+1}}(z_{n+1}) = \underset{z_n}{\text{max}} \{ \text{ln }f_{n+1}(z_n,z_{n+1}) + \mu_{z_n \rightarrow f_{n+1}}(z_n) \}$ \\
-Eliminate $\mu_{z_n \rightarrow f_{n+1}}(z_n)$ and use $f_n(z_{n-1},z_n) = p(z_n|z_{n-1})p(x_n|z_n)$ to get a recursion:\\
-$\omega(z_{n+1}) = \text{ln } p(x_{n+1}|z_{n+1}) + \underset{z_n}{\text{max }} \{ \text{ln }p(z_{n+1}|z_n) + \omega(z_n)\}$\\
-These are initialized using:\\
-$\omega(z_1) = \text{ln }p(z_1) + \text{ln }p(x_1|z_1)$
 
 \subsection{Factorized distributions in approx inf}
 $\mathcal{L}(q) = \int \prod_i q_i \big\{ \text{ln } p(X,Z) - \sum_i \text{ln } q_i \}dZ$\\
