@@ -263,6 +263,23 @@ L(\theta) = \sum_n \log (\sum_z p(x_n,z_n|\theta))\\
 = \log p(x_n|\theta)
 $
 
+\subsection{EM,VM, VB}
+EM,VEM are learning algorithms, VB is for inference.\\
+If $Q=P$, use EM. If $Q$ is simpler than $P$, use VEM (easier computation, might never reach max, biased result)\\
+Bayes: approximate $P(\theta|X)$ (eg sampling). Maximize both $\theta$ and $\alpha$.\\
+\begin{tabular}{|c|c|c|}
+\hline
+Frequentist: & EM:  & VEM: \\
+ & unbiased, can overfit & biased, can overfit\\
+\hline
+Bayesian: & $P(\theta|X)$: & VB\\
+& best, but comp.hard,  & \\
+& no overfitting bc no fitting & \\
+& variance & \\
+\hline
+\end{tabular}
+Bayes does not overfit because you integrate over parameter space.
+
 \subsection{Variational EM Algorithm}
 Variational EM algorithm has two steps:\\
  \textbf{E-Step:}\\
